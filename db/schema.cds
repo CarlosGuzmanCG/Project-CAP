@@ -1,20 +1,30 @@
-namespace products.db;
+namespace com.cg;
 
-entity Products {
-    key ID              : UUID;
-        name            : String;
-        Description     : String;
-        ImageUrl        : String;
-        RELEASEdATE     : DateTime;
-        DiscotinuedDate : DateTime;
-        Price           : Decimal(16, 2);
-        Heigh           : Decimal(16, 2);
-        Width           : Decimal(16, 2);
-        Depth           : Decimal(16, 2);
-        Quantity        : Decimal(16, 2);
+define type Name : String(50);
+
+type Address {
+    Street     : String;
+    City       : String;
+    State      : String(2);
+    PostalCode : String(5);
+    Country    : String(3);
 };
 
-entity Supplier {
+entity Products {
+    key ID               : UUID;
+        Name             : String;
+        Description      : String;
+        ImageUrl         : String;
+        ReleaseDate      : DateTime;
+        DiscontinuedDate : DateTime;
+        Price            : Decimal(16, 2);
+        Height           : Decimal(16, 2);
+        Width            : Decimal(16, 2);
+        Depth            : Decimal(16, 2);
+        Quantity         : Decimal(16, 2);
+};
+
+entity Suppliers {
     key ID         : UUID;
         Name       : String;
         Street     : String;
@@ -27,7 +37,31 @@ entity Supplier {
         Fax        : String;
 };
 
-entity Category {
+entity Suppliers_01 {
+    key ID      : UUID;
+        Name    : String;
+        Address : Address;
+        Email   : String;
+        Phone   : String;
+        Fax     : String;
+};
+
+entity Suppliers_02 {
+    key ID      : UUID;
+        Name    : String;
+        Address : {
+            Street     : String;
+            City       : String;
+            State      : String(2);
+            PostalCode : String(5);
+            Country    : String(3);
+        };
+        Email   : String;
+        Phone   : String;
+        Fax     : String;
+};
+
+entity Categories {
     key ID   : String(1);
         Name : String;
 };
@@ -65,6 +99,7 @@ entity ProductReview {
 };
 
 entity SalesData {
-    key DeliveryDate : DateTime;
+    key ID           : UUID;
+        DeliveryDate : DateTime;
         Revenue      : Decimal(16, 2);
 }
