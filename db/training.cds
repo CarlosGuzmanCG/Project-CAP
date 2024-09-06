@@ -1,5 +1,31 @@
 namespace com.training;
 
+using {
+    cuid
+
+} from '@sap/cds/common';
+
+
+//associations: Many a Many
+entity Course : cuid {
+    //key ID      : UUID;
+    Student : Association to many StudentCourse
+                  on Student.Course = $self;
+};
+
+entity Student : cuid {
+    //key ID     : UUID;
+    Course : Association to many StudentCourse
+                 on Course.Student = $self;
+}
+
+entity StudentCourse : cuid {
+    //key ID      : UUID;
+    Student : Association to Student;
+    Course  : Association to Course;
+}
+//*----*
+
 // type EmailAddress_01: many{ Type matriz of array of
 //     kind : String;
 //     email : String;
@@ -80,23 +106,3 @@ namespace com.training;
 //         Quantity
 //     }
 //     where Name = : pName;
-
-//associations: Many a Many
-entity Course : cuid {
-    //key ID      : UUID;
-    Student : Association to many StudentCourse
-                  on Student.Course = $self;
-};
-
-entity Student : cuid {
-    //key ID     : UUID;
-    Course : Association to many StudentCourse
-                 on Course.Student = $self;
-}
-
-entity StudentCourse : cuid {
-    //key ID      : UUID;
-    Student : Association to Student;
-    Course  : Association to Course;
-}
-//*----*
