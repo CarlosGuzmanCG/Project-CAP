@@ -1,6 +1,10 @@
 namespace com.cg;
 
-using { cuid } from '@sap/cds/common';
+using {
+    cuid,
+    managed //, add 4 fields to the table -> common.cds
+    //User
+} from '@sap/cds/common';
 
 
 define type Name : String(50);
@@ -62,68 +66,74 @@ type Address {
 
 type Dec         : Decimal(16, 2);
 
-entity Products : cuid {
+entity Products : cuid, managed {
     //key ID               : UUID;
-        Name             : String not null; //default 'NoName';
-        Description      : String;
-        ImageUrl         : String;
-        ReleaseDate      : DateTime default $now;
-        //creationDate     : Date default CURRENT_DATE;
-        DiscontinuedDate : DateTime;
-        Price            : Dec;
-        Height           : type of Price; //Decimal(16, 2);
-        Width            : Decimal(16, 2);
-        Depth            : Decimal(16, 2);
-        Quantity         : Decimal(16, 2);
+    Name             : String not null; //default 'NoName';
+    Description      : String;
+    ImageUrl         : String;
+    ReleaseDate      : DateTime default $now;
+    //creationDate     : Date default CURRENT_DATE;
+    DiscontinuedDate : DateTime;
+    Price            : Dec;
+    Height           : type of Price; //Decimal(16, 2);
+    Width            : Decimal(16, 2);
+    Depth            : Decimal(16, 2);
+    Quantity         : Decimal(16, 2);
 
-        // Unmanaged Associations
-        // Supplier_Id      : UUID;
-        // ToSupplier       : Association to one Suppliers // Unmanaged Associations
-        //                        on ToSupplier.ID = Supplier_Id;
-        // UnitOfMeasure_id  : String(2);
-        // ToUnitOfMeasure  : Association to UnitOfMeasures // Unmanaged Associations
-        //                        on ToUnitOfMeasure.ID = UnitOfMeasure_id;
+    // Unmanaged Associations
+    // Supplier_Id      : UUID;
+    // ToSupplier       : Association to one Suppliers // Unmanaged Associations
+    //                        on ToSupplier.ID = Supplier_Id;
+    // UnitOfMeasure_id  : String(2);
+    // ToUnitOfMeasure  : Association to UnitOfMeasures // Unmanaged Associations
+    //                        on ToUnitOfMeasure.ID = UnitOfMeasure_id;
 
-        //Managed Associations
-        Supplier         : Association to one Suppliers;
-        UnitOfMeasures   : Association to UnitOfMeasures;
-        Currency         : Association to Categories;
-        DimensionUnit    : Association to DimensionUnits;
-        Category         : Association to Categories;
-        //Association Many
-        SalesData        : Association to many SalesData
-                               on SalesData.Product = $self;
-        Reviews          : Association to many ProductReview
-                               on Reviews.Product = $self;
+    //Managed Associations
+    Supplier         : Association to one Suppliers;
+    UnitOfMeasures   : Association to UnitOfMeasures;
+    Currency         : Association to Categories;
+    DimensionUnit    : Association to DimensionUnits;
+    Category         : Association to Categories;
+    //Association Many
+    SalesData        : Association to many SalesData
+                           on SalesData.Product = $self;
+    Reviews          : Association to many ProductReview
+                           on Reviews.Product = $self;
+
+    //Fields manager
+    // createdAt        : Timestamp  @cds.on.insert: $now;
+    // createdBy        : User       @cds.on.insert: $user;
+    // modifiedAt       : Timestamp  @cds.on.insert: $now   @cds.on.update: $now;
+    // modifiedBy       : User       @cds.on.insert: $user  @cds.on.update: $user;
 };
 
 //Composition
-entity Orders : cuid{
+entity Orders : cuid {
     //key ID       : UUID;
-        Date     : Date;
-        Customer : String;
-        Item     : Composition of many OrderItems
-                       on Item.Order = $self;
+    Date     : Date;
+    Customer : String;
+    Item     : Composition of many OrderItems
+                   on Item.Order = $self;
 };
 
 entity OrderItems : cuid {
     //key ID       : UUID;
-        Order    : Association to Orders;
-        Product  : Association to Products;
-        Quantity : Integer;
+    Order    : Association to Orders;
+    Product  : Association to Products;
+    Quantity : Integer;
 }
 //*-----*
 
-entity Suppliers : cuid {
+entity Suppliers : cuid, managed {
     //key ID      : UUID;
-        Name    : type of Products : Name; //String;
-        Street  : String;
-        Address : Address;
-        Email   : String;
-        Phone   : String;
-        Fax     : String;
-        Product : Association to many Products
-                      on Product.Supplier = $self;
+    Name    : type of Products : Name; //String;
+    Street  : String;
+    Address : Address;
+    Email   : String;
+    Phone   : String;
+    Fax     : String;
+    Product : Association to many Products
+                  on Product.Supplier = $self;
 };
 
 // entity Suppliers_01 {
@@ -181,21 +191,21 @@ entity Months {
         ShortDescription : String(3);
 };
 
-entity ProductReview : cuid {
+entity ProductReview : cuid, managed {
     //key ID      : UUID;
-        Name    : String;
-        Rating  : String;
-        Comment : String;
-        Product : Association to Products;
+    Name    : String;
+    Rating  : String;
+    Comment : String;
+    Product : Association to Products;
 };
 
-entity SalesData : cuid {
+entity SalesData : cuid, managed {
     //key ID            : UUID;
-        DeliveryDate  : DateTime;
-        Revenue       : Decimal(16, 2);
-        Product       : Association to Products; //Managed Associations
-        Currency      : Association to Currencies; //Managed Associations
-        DeliveryMonth : Association to Months; //Managed Associations
+    DeliveryDate  : DateTime;
+    Revenue       : Decimal(16, 2);
+    Product       : Association to Products; //Managed Associations
+    Currency      : Association to Currencies; //Managed Associations
+    DeliveryMonth : Association to Months; //Managed Associations
 };
 
 entity SelProducts   as select from Products;
@@ -264,19 +274,19 @@ extend Products with {
 //associations: Many a Many
 entity Course : cuid {
     //key ID      : UUID;
-        Student : Association to many StudentCourse
-                      on Student.Course = $self;
+    Student : Association to many StudentCourse
+                  on Student.Course = $self;
 };
 
 entity Student : cuid {
     //key ID     : UUID;
-        Course : Association to many StudentCourse
-                     on Course.Student = $self;
+    Course : Association to many StudentCourse
+                 on Course.Student = $self;
 }
 
 entity StudentCourse : cuid {
     //key ID      : UUID;
-        Student : Association to Student;
-        Course  : Association to Course;
+    Student : Association to Student;
+    Course  : Association to Course;
 }
 //*----*
