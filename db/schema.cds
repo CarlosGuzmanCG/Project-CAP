@@ -72,44 +72,80 @@ entity Products {
         Width            : Decimal(16, 2);
         Depth            : Decimal(16, 2);
         Quantity         : Decimal(16, 2);
+
+        // Unmanaged Associations
+        // Supplier_Id      : UUID;
+        // ToSupplier       : Association to one Suppliers // Unmanaged Associations
+        //                        on ToSupplier.ID = Supplier_Id;
+        // UnitOfMeasure_id  : String(2);
+        // ToUnitOfMeasure  : Association to UnitOfMeasures // Unmanaged Associations
+        //                        on ToUnitOfMeasure.ID = UnitOfMeasure_id;
+
+        //Managed Associations
+        Supplier         : Association to one Suppliers;
+        UnitOfMeasures   : Association to UnitOfMeasures;
+        Currency         : Association to Categories;
+        DimensionUnit    : Association to DimensionUnits;
+        Category         : Association to Categories;
+        //Association Many
+        SalesData        : Association to many SalesData
+                               on SalesData.Product = $self;
+        Reviews          : Association to many ProductReview
+                               on Reviews.Product = $self;
 };
+
+//Composition
+entity Orders {
+    key ID       : UUID;
+        Date     : Date;
+        Customer : String;
+        Item     : Composition of many OrderItems
+                       on Item.Order = $self;
+};
+
+entity OrderItems {
+    key ID       : UUID;
+        Order    : Association to Orders;
+        Product  : Association to Products;
+        Quantity : Integer;
+}
+//*-----*
 
 entity Suppliers {
-    key ID         : UUID;
-        Name       : type of Products : Name; //String;
-        Street     : String;
-        City       : String;
-        State      : String(2);
-        PostalCode : String(5);
-        Country    : String(3);
-        Email      : String;
-        Phone      : String;
-        Fax        : String;
-};
-
-entity Suppliers_01 {
     key ID      : UUID;
-        Name    : String;
+        Name    : type of Products : Name; //String;
+        Street  : String;
         Address : Address;
         Email   : String;
         Phone   : String;
         Fax     : String;
+        Product : Association to many Products
+                      on Product.Supplier = $self;
 };
 
-entity Suppliers_02 {
-    key ID      : UUID;
-        Name    : String;
-        Address : {
-            Street     : String;
-            City       : String;
-            State      : String(2);
-            PostalCode : String(5);
-            Country    : String(3);
-        };
-        Email   : String;
-        Phone   : String;
-        Fax     : String;
-};
+// entity Suppliers_01 {
+//     key ID      : UUID;
+//         Name    : String;
+//         Address : Address;
+//         Email   : String;
+//         Phone   : String;
+//         Fax     : String;
+// };
+
+// entity Suppliers_02 {
+//     key ID      : UUID;
+//         Name    : String;
+//         Address : {
+//             Street     : String;
+//             City       : String;
+//             State      : String(2);
+//             PostalCode : String(5);
+//             Country    : String(3);
+//         };
+//         Email   : String;
+//         Phone   : String;
+//         Fax     : String;
+// };
 
 entity Categories {
     key ID   : String(1);
@@ -126,7 +162,7 @@ entity Currencies {
         Description : String;
 };
 
-entity UnitOfMeasuures {
+entity UnitOfMeasures {
     key ID          : String(2);
         Description : String;
 };
@@ -143,15 +179,20 @@ entity Months {
 };
 
 entity ProductReview {
-    key Name    : String;
+    key ID      : UUID;
+        Name    : String;
         Rating  : String;
         Comment : String;
+        Product : Association to Products;
 };
 
 entity SalesData {
-    key ID           : UUID;
-        DeliveryDate : DateTime;
-        Revenue      : Decimal(16, 2);
+    key ID            : UUID;
+        DeliveryDate  : DateTime;
+        Revenue       : Decimal(16, 2);
+        Product       : Association to Products; //Managed Associations
+        Currency      : Association to Currencies; //Managed Associations
+        DeliveryMonth : Association to Months; //Managed Associations
 };
 
 entity SelProducts   as select from Products;
@@ -205,14 +246,34 @@ entity ProjProducts3 as
 // entity ParamProducts(pName : String) as
 //     select from Products{
 //         Name,
-//         Price, 
+//         Price,
 //         Quantity
 //     }
 //     where Name = : pName;
 
 // entity ProjParamProducts(pName : String) as projection on Products where Name = : pName;
-
+//Extension
 extend Products with {
-    PriceCondition: String(2);
-    PriceDetermination: String(3);
+    PriceCondition     : String(2);
+    PriceDetermination : String(3);
 };
+
+//associations: Many a Many
+entity Course {
+    key ID      : UUID;
+        Student : Association to many StudentCourse
+                      on Student.Course = $self;
+};
+
+entity Student {
+    key ID     : UUID;
+        Course : Association to many StudentCourse
+                     on Course.Student = $self;
+}
+
+entity StudentCourse {
+    key ID      : UUID;
+        Student : Association to Student;
+        Course  : Association to Course;
+}
+//*----*
