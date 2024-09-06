@@ -1,5 +1,8 @@
 namespace com.cg;
 
+using { cuid } from '@sap/cds/common';
+
+
 define type Name : String(50);
 
 type Address {
@@ -59,8 +62,8 @@ type Address {
 
 type Dec         : Decimal(16, 2);
 
-entity Products {
-    key ID               : UUID;
+entity Products : cuid {
+    //key ID               : UUID;
         Name             : String not null; //default 'NoName';
         Description      : String;
         ImageUrl         : String;
@@ -95,24 +98,24 @@ entity Products {
 };
 
 //Composition
-entity Orders {
-    key ID       : UUID;
+entity Orders : cuid{
+    //key ID       : UUID;
         Date     : Date;
         Customer : String;
         Item     : Composition of many OrderItems
                        on Item.Order = $self;
 };
 
-entity OrderItems {
-    key ID       : UUID;
+entity OrderItems : cuid {
+    //key ID       : UUID;
         Order    : Association to Orders;
         Product  : Association to Products;
         Quantity : Integer;
 }
 //*-----*
 
-entity Suppliers {
-    key ID      : UUID;
+entity Suppliers : cuid {
+    //key ID      : UUID;
         Name    : type of Products : Name; //String;
         Street  : String;
         Address : Address;
@@ -178,16 +181,16 @@ entity Months {
         ShortDescription : String(3);
 };
 
-entity ProductReview {
-    key ID      : UUID;
+entity ProductReview : cuid {
+    //key ID      : UUID;
         Name    : String;
         Rating  : String;
         Comment : String;
         Product : Association to Products;
 };
 
-entity SalesData {
-    key ID            : UUID;
+entity SalesData : cuid {
+    //key ID            : UUID;
         DeliveryDate  : DateTime;
         Revenue       : Decimal(16, 2);
         Product       : Association to Products; //Managed Associations
@@ -259,20 +262,20 @@ extend Products with {
 };
 
 //associations: Many a Many
-entity Course {
-    key ID      : UUID;
+entity Course : cuid {
+    //key ID      : UUID;
         Student : Association to many StudentCourse
                       on Student.Course = $self;
 };
 
-entity Student {
-    key ID     : UUID;
+entity Student : cuid {
+    //key ID     : UUID;
         Course : Association to many StudentCourse
                      on Course.Student = $self;
 }
 
-entity StudentCourse {
-    key ID      : UUID;
+entity StudentCourse : cuid {
+    //key ID      : UUID;
         Student : Association to Student;
         Course  : Association to Course;
 }
