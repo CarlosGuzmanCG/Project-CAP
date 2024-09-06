@@ -3,7 +3,7 @@ namespace com.cg;
 using {
     cuid,
     managed //, add 4 fields to the table -> common.cds
-    //User
+//User
 } from '@sap/cds/common';
 
 
@@ -68,8 +68,8 @@ type Dec         : Decimal(16, 2);
 
 entity Products : cuid, managed {
     //key ID               : UUID;
-    Name             : String not null; //default 'NoName';
-    Description      : String;
+    Name             : localized String not null; //default 'NoName';
+    Description      : localized String;
     ImageUrl         : String;
     ReleaseDate      : DateTime default $now;
     //creationDate     : Date default CURRENT_DATE;
@@ -100,11 +100,11 @@ entity Products : cuid, managed {
     Reviews          : Association to many ProductReview
                            on Reviews.Product = $self;
 
-    //Fields manager
-    // createdAt        : Timestamp  @cds.on.insert: $now;
-    // createdBy        : User       @cds.on.insert: $user;
-    // modifiedAt       : Timestamp  @cds.on.insert: $now   @cds.on.update: $now;
-    // modifiedBy       : User       @cds.on.insert: $user  @cds.on.update: $user;
+//Fields manager
+// createdAt        : Timestamp  @cds.on.insert: $now;
+// createdBy        : User       @cds.on.insert: $user;
+// modifiedAt       : Timestamp  @cds.on.insert: $now   @cds.on.update: $now;
+// modifiedBy       : User       @cds.on.insert: $user  @cds.on.update: $user;
 };
 
 //Composition
@@ -162,33 +162,34 @@ entity Suppliers : cuid, managed {
 
 entity Categories {
     key ID   : String(1);
-        Name : String;
+        Name : localized String;
 };
 
 entity StockAvailability {
     key ID          : Integer;
-        Description : String;
+        Description : localized String;
+        Product     : Association to Products;
 };
 
 entity Currencies {
     key ID          : String(3);
-        Description : String;
+        Description : localized String;
 };
 
 entity UnitOfMeasures {
     key ID          : String(2);
-        Description : String;
+        Description : localized String;
 };
 
 entity DimensionUnits {
     key ID          : String(2);
-        Description : String;
+        Description : localized String;
 };
 
 entity Months {
     key ID               : String(2);
-        Description      : String;
-        ShortDescription : String(3);
+        Description      : localized String;
+        ShortDescription : localized String(3);
 };
 
 entity ProductReview : cuid, managed {
