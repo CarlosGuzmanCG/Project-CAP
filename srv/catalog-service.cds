@@ -23,26 +23,27 @@ define service CatalogService {
     entity Products          as
         select from cg.materials.Products {
             ID,
-            Name           as ProductName,
-            Description,
+            Name           as ProductName @mandatory,
+            Description @mandatory,
             ImageUrl,
             ReleaseDate,
             DiscontinuedDate,
-            Price,
+            Price @mandatory,
             Height,
             Width,
             Depth,
             Quantity,
-            UnitOfMeasures as ToUnitOfMeasure,
-            Currency       as ToCurrency,
-            Category       as ToCategory,
-            Category.Name  as Category,
+            UnitOfMeasures as ToUnitOfMeasure @mandatory,
+            Currency       as ToCurrency @mandatory,
+            Category       as ToCategory @mandatory,
+            Category.Name  as Category @readonly,
             DimensionUnit  as ToDimensionUnit,
             SalesData,
             Supplier,
             Reviews
         };
 
+    @readonly
     entity Supplier          as
         select from cg.sales.Suppliers {
             ID,
@@ -53,7 +54,8 @@ define service CatalogService {
             Product as ToProduct
         };
 
-    entity Review            as
+    @readonly
+    entity SalesData            as
         select from cg.sales.SalesData {
             ID,
             DeliveryDate,
@@ -64,6 +66,7 @@ define service CatalogService {
             Product                   as ToProduct
         }
 
+    @readonly
     entity StockAvailability as
         select from cg.materials.StockAvailability {
             ID,
@@ -71,24 +74,28 @@ define service CatalogService {
             Product as ToProduct
         };
 
+    @readonly
     entity VH_Categories     as
         select from cg.materials.Categories {
             ID   as Code,
             Name as Text
         };
 
+    @readonly
     entity VH_Currencies     as
         select from cg.materials.Currencies {
             ID          as Code,
             Description as Text
         };
 
+    @readonly
     entity VH_UnitOfMeasure  as
         select from cg.materials.UnitOfMeasures {
             ID          as Code,
             Description as Text
         };
 
+    @readonly
     entity VH_DimensionUnits as
         select from cg.materials.DimensionUnits {
             ID          as Code,
