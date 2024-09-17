@@ -22,16 +22,17 @@ define service CatalogService {
 
     entity Products          as
         select from cg.materials.Products {
-            ID,
-            Name           as ProductName @mandatory,
-            Description @mandatory,
-            ImageUrl,
-            ReleaseDate,
-            DiscontinuedDate,
-            Price @mandatory,
-            Height,
-            Width,
-            Depth,
+            // ID,
+            // Name           as ProductName @mandatory,
+            // Description @mandatory,
+            // ImageUrl,
+            // ReleaseDate,
+            // DiscontinuedDate,
+            // Price @mandatory,
+            // Height,
+            // Width,
+            // Depth,
+            *,
             Quantity,
             UnitOfMeasures as ToUnitOfMeasure @mandatory,
             Currency       as ToCurrency @mandatory,
@@ -101,4 +102,23 @@ define service CatalogService {
             ID          as Code,
             Description as Text
         from cg.materials.DimensionUnits;
+}
+
+define service MyService {
+    entity SuppliersProduct as
+        select from cg.materials.Products[Name = 'Bread']{
+            *,
+            Name,
+            Description,
+            Supplier.Address
+        } where Supplier.Address.PostalCode = 98074;
+    
+    entity  SupliersToSales as 
+        select 
+            Supplier.Email,
+            Category.Name,
+            SalesData.Currency.ID,
+            SalesData.Currency.Description
+         from cg.materials.Products;
+    
 }
