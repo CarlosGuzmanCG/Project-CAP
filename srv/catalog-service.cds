@@ -97,8 +97,8 @@ define service CatalogService {
 
     @readonly
     entity VH_DimensionUnits as
-        select from cg.materials.DimensionUnits {
+        select 
             ID          as Code,
             Description as Text
-        };
+        from cg.materials.DimensionUnits;
 }
