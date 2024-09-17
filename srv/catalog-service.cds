@@ -138,5 +138,10 @@ define service MyService {
         where
             Products.Name = 'Bread';
 
+}
+
+define service Reports  {
+
+    entity AverageRating as projection on cg.reports.AverageRating;
 
 }

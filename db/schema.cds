@@ -136,7 +136,7 @@ context sales {
     entity OrderItems : cuid {
         //key ID       : UUID;
         Order    : Association to Orders;
-        Product  : Association to  materials.Products;
+        Product  : Association to materials.Products;
         Quantity : Integer;
     }
     //*-----*
@@ -198,3 +198,16 @@ context sales {
     };
 
 }
+
+context reports {
+
+    entity AverageRating as
+        select from cg.materials.ProductReview {
+            Product.ID as ProductId,
+            avg( 
+                Rating
+            ) as AverageRating : Decimal(16, 2)
+    } group by Product.ID;
+
+}
+
