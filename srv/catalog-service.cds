@@ -35,9 +35,9 @@ define service CatalogService {
             *,
             Quantity,
             UnitOfMeasures as ToUnitOfMeasure @mandatory,
-            Currency       as ToCurrency @mandatory,
-            Category       as ToCategory @mandatory,
-            Category.Name  as Category @readonly,
+            Currency       as ToCurrency      @mandatory,
+            Category       as ToCategory      @mandatory,
+            Category.Name  as Category        @readonly,
             DimensionUnit  as ToDimensionUnit,
             SalesData,
             Supplier,
@@ -56,7 +56,7 @@ define service CatalogService {
         };
 
     @readonly
-    entity SalesData            as
+    entity SalesData         as
         select from cg.sales.SalesData {
             ID,
             DeliveryDate,
@@ -98,7 +98,7 @@ define service CatalogService {
 
     @readonly
     entity VH_DimensionUnits as
-        select 
+        select
             ID          as Code,
             Description as Text
         from cg.materials.DimensionUnits;
@@ -111,14 +111,32 @@ define service MyService {
             Name,
             Description,
             Supplier.Address
-        } where Supplier.Address.PostalCode = 98074;
-    
-    entity  SupliersToSales as 
-        select 
+        }
+        where
+            Supplier.Address.PostalCode = 98074;
+
+    entity SupliersToSales  as
+        select
             Supplier.Email,
             Category.Name,
             SalesData.Currency.ID,
             SalesData.Currency.Description
-         from cg.materials.Products;
-    
+        from cg.materials.Products;
+
+    entity EntityInfix      as
+        select Supplier[Name = 'Exotic Liquids'].Phone from cg.materials.Products
+        where
+            Products.Name = 'Bread';
+
+    entity EntityJoin       as
+        select Phone from cg.materials.Products
+        left join cg.sales.Suppliers as Supp
+            on(
+                Supp.ID = Products.Supplier.ID
+            )
+            and Supp.Name = 'Exotic Liquids'
+        where
+            Products.Name = 'Bread';
+
+
 }
